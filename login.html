@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./assets/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./src/output.css" rel="stylesheet">
+    <title>login</title>
+  </head>
+
+  <body class="body">
+    <div class="flex flex-col min-h-screen p-[5vw]">
+        <header class="relative">
+            <a href="login.html" class="logo-link">
+                <img alt="Clínica Sagrada Família logo" height="50" src="./assets/logo-sagrada-familia.svg" href="index.html" class="absolute top-0 left-0"/>
+            </a>
+        </header>
+
+        <main class="flex-1 flex flex-col justify-center" style="padding-left: 20%; padding-right: 20%;">
+            <div>
+                <h1 class="title1">Inicio de Sesión</h1>
+            </div><br>
+
+            <div style="text-align: center;">
+                <label for="ticket-title" style="display: block; text-align: left; width: 300px; margin: 0 auto 5px auto;">Correo electrónico</label>
+                <input type="text" id="ticket-title" class="form-input" placeholder="Correo" style="width: 300px; border-radius: 0; margin-bottom: 15px;"/>
+            </div>                   
+
+            <div style="text-align: center;">
+                <label for="ticket-title" style="display: block; text-align: left; width: 300px; margin: 0 auto 5px auto;">Contraseña</label>
+                <input type="password" id="ticket-title" class="form-input" placeholder="Contraseña" style="width: 300px; border-radius: 0; margin-bottom: 15px;"/>
+            </div><br><br>
+            
+            <div style="text-align: center;">
+                <a href="home.html">
+                    <button class="button-primary" style="width: 300px; margin: 0 auto; margin-bottom: 15px;">
+                        Iniciar Sesión
+                    </button>
+                </a>
+            </div><br>
+
+            <div style="text-align: center;">
+                <a href="reset.html" style="text-decoration: underline; color:#003C92;">Recuperar Contraseña</a>
+            </div>                           
+        </main>
+    </div>
+  </body>   
+</html>

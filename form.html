@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./assets/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./src/output.css" rel="stylesheet">
+    <title>Form</title>
+  </head>
+
+  <body class="body">
+    <div class="flex flex-col min-h-screen p-[5vw]">
+      <header class="relative">
+        <a href="index.html" class="logo-link">
+          <img alt="Clínica Sagrada Família logo" src="./assets/logo-sagrada-familia.svg" class="h-12 absolute top-0 left-0"/>
+        </a>
+      </header>
+
+      <div class="flex-1 flex flex-col justify-center px-[10vw]">
+        <div>
+          <h2 class="text-left w-full mb-4">Los campos con (*) son obligatorios.</h2>
+        </div>
+        
+        <form id="ticket-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ticket-title" class="block text-left w-full mb-1">Título *</label>
+              <input 
+                type="text" 
+                id="ticket-title" 
+                class="form-input rounded-none" 
+                placeholder="Título"
+                required
+                minlength="3"
+                maxlength="100"
+              />
+              <span id="title-error" class="error-message"></span>
+            </div>
+          
+            <div class="form-group">
+              <label for="department" class="block text-left w-full mb-1">Departamento *</label>
+              <select id="department" class="form-input rounded-none" required>
+                <option value="" disabled selected>Seleccione el departamento</option>
+                <option value="pediatria">Pediatría</option>
+                <option value="medicina_general">Medicina General</option>
+                <option value="odontologia">Odontología</option>
+                <option value="traumatologia">Traumatología</option>
+              </select>
+              <span id="department-error" class="error-message"></span>
+            </div>
+          
+            <div class="form-group">
+              <label for="full-name" class="block text-left w-full mb-1">Nombre y Apellidos</label>
+              <input 
+                type="text" 
+                id="full-name" 
+                class="form-input rounded-none" 
+                placeholder="Nombre y apellidos"
+                minlength="3"
+                maxlength="100"
+              />
+              <span id="name-error" class="error-message"></span>
+            </div>
+          </div>
+          
+          <div class="form-row-full mb-6">
+            <label for="incident" class="block text-left w-full mb-1">Descripción *</label>
+            <textarea 
+              id="incident" 
+              class="textarea-large rounded-none" 
+              placeholder="Escriba la descripción aquí..."
+              required
+              maxlength="1000"
+            ></textarea>
+            <span id="incident-error" class="error-message"></span>
+          </div>
+          
+          <div class="form-row mb-6">
+            <div class="form-group">
+              <label for="file-upload" class="block text-left mb-1">Adjunte archivo</label>
+              <input 
+                type="file" 
+                id="file-upload" 
+                accept=".pdf, .doc, .docx, .png, .jpg, .jpeg" 
+                class="inline-block border-0 rounded-none"
+                multiple
+              />
+              <span id="file-error" class="error-message"></span>
+            </div>       
+            
+            <div class="flex items-center justify-center">
+              <button type="submit" class="button-primary w-[15vw]">
+                Enviar
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script type="module">
+      import { ticketService } from './src/ticketService.js';
+
+      const form = document.getElementById('ticket-form');
+      const fileInput = document.getElementById('file-upload');
+
+      // Funcion para marcar un campo como invalido
+      function setInvalidField(element, isInvalid) 
+      {
+        if(isInvalid) 
+        {
+          element.classList.add('field-invalid');
+        } 
+        else 
+        {
+          element.classList.remove('field-invalid');
+        }
+      }
+
+      // Funcion para validar el tamaño y tipo de archivos
+      function validateFiles(files) 
+      {
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        
+        for(const file of files) 
+        {
+          if(file.size > maxSize) 
+          {
+            return 'Los archivos no deben superar los 5MB';
+          }
+          if(!allowedTypes.includes(file.type)) 
+          {
+            return 'Tipo de archivo no permitido. Use: PDF, DOC, DOCX, PNG o JPG';
+          }
+        }
+        return '';
+      }
+
+      // Funcion para mostrar errores
+      function showError(elementId, message, inputElement) 
+      {
+        const errorElement = document.getElementById(elementId);
+        errorElement.textContent = message;
+        errorElement.style.display = message ? 'block' : 'none';
+        if(inputElement) 
+        {
+          setInvalidField(inputElement, message !== '');
+        }
+      }
+
+      // Validar campos individuales
+      document.getElementById('ticket-title').addEventListener('input', (e) => 
+      {
+        const value = e.target.value.trim();
+        if(value.length < 3) 
+        {
+          showError('title-error', 'El título debe tener al menos 3 caracteres', e.target);
+        } 
+        else if(value.length > 100) 
+        {
+          showError('title-error', 'El título no debe exceder los 100 caracteres', e.target);
+        } 
+        else 
+        {
+          showError('title-error', '', e.target);
+        }
+      });
+
+      document.getElementById('department').addEventListener('change', (e) => 
+      {
+        if(!e.target.value) 
+        {
+          showError('department-error', 'Seleccione un departamento', e.target);
+        } 
+        else 
+        {
+          showError('department-error', '', e.target);
+        }
+      });
+
+      document.getElementById('full-name').addEventListener('input', (e) => 
+      {
+        const value = e.target.value.trim();
+        if(value && value.length < 3) 
+        {
+          showError('name-error', 'El nombre debe tener al menos 3 caracteres', e.target);
+        } 
+        else if(value.length > 100) 
+        {
+          showError('name-error', 'El nombre no debe exceder los 100 caracteres', e.target);
+        } 
+        else 
+        {
+          showError('name-error', '', e.target);
+        }
+      });
+
+      document.getElementById('incident').addEventListener('input', (e) => 
+      {
+        const value = e.target.value.trim();
+        if(value.length > 1000) 
+        {
+          showError('incident-error', 'La incidencia no debe exceder los 1000 caracteres', e.target);
+        } 
+        else 
+        {
+          showError('incident-error', '', e.target);
+        }
+      });
+
+      fileInput.addEventListener('change', (e) => 
+      {
+        const error = validateFiles(e.target.files);
+        showError('file-error', error);
+      });
+
+      // Manejar el envio del formulario
+      form.addEventListener('submit', async (e) => 
+      {
+        e.preventDefault();
+        
+        // Validar todos los campos requeridos
+        const titleInput = document.getElementById('ticket-title');
+        const departmentInput = document.getElementById('department');
+        const incidentInput = document.getElementById('incident');
+        
+        const title = titleInput.value.trim();
+        const department = departmentInput.value;
+        const incident = incidentInput.value.trim();
+        
+        let hasErrors = false;
+
+        if(!title || title.length < 3) 
+        {
+          showError('title-error', 'El título es obligatorio y debe tener al menos 3 caracteres', titleInput);
+          hasErrors = true;
+        }
+
+        if(!department) 
+        {
+          showError('department-error', 'Seleccione un departamento', departmentInput);
+          hasErrors = true;
+        }
+
+        if(!incident) 
+        {
+          showError('incident-error', 'La descripción es obligatoria', incidentInput);
+          hasErrors = true;
+        }
+
+        const fileError = validateFiles(fileInput.files);
+        if(fileError) 
+        {
+          showError('file-error', fileError);
+          hasErrors = true;
+        }
+
+        if(hasErrors) 
+        {
+          return;
+        }
+
+        // Procesar los archivos adjuntos
+        const attachments = Array.from(fileInput.files).map(file => 
+        ({
+          name: file.name,
+          url: URL.createObjectURL(file)
+        }));
+        
+        // Crear el ticket
+        const ticketData = 
+        {
+          title,
+          department,
+          fullName: document.getElementById('full-name').value.trim(),
+          incident,
+          attachments
+        };
+
+        const ticketId = ticketService.createTicket(ticketData);
+        localStorage.setItem('lastCreatedTicket', ticketId);
+        window.location.href = 'formSent.html';
+      });
+    </script>
+
+    <style>
+      .error-message {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: none;
+      }
+
+      .field-invalid {
+        border-color: #dc2626 !important;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,344 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Naste';
+  font-weight: 400; /* Regular */
+  font-style: normal;
+  src: url('../assets/fonts/Naste-Regular.ttf') format('truetype'),
+}
+
+@font-face {
+  font-family: 'Naste';
+  font-weight: 600; /* Semibold */
+  font-style: normal;
+  src: url('../assets/fonts/Naste-SemiBold.ttf') format('truetype'),
+}
+
+@layer components{
+
+  .logo-link {
+    display: inline-block;
+  }
+
+  .logo-link img {
+    width: auto;
+    display: block;
+  }
+
+  .button-primary{
+    text-align: center;
+    background-color: #003C92;
+    color: #fff;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .button-primary:hover{
+    background-color: #002f70;
+  }
+
+  .button-copy{
+    background-color: #003C92;
+    color: #fff;
+  }
+
+  .button-copy:hover{
+    background-color: #002f70;
+  }
+
+  .button-secondary{
+    background-color: rgb(229 231 235);
+    color: #5c5c5c;
+  }
+
+  .button-light{
+    text-align: center;
+    background-color: #338AFF;
+    color: #fff;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .button-light:hover{
+    background-color: #2d79db;
+  }
+
+  .icon-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .icon-button:hover .icon-image {
+      transform: scale(1.2);
+  }
+
+  .icon-button:focus {
+    outline: none;
+    background-color: rgb(209 211 215);
+  }
+
+  .title1{
+    font-size: 60px;
+    text-decoration: double;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .separator{
+    width: 1px;
+    background-color: #5c5c5c;
+    height: 100px;
+    margin: 10%;
+
+  }
+
+  .body {
+    font-family: 'Naste', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+  }
+
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 40px; 
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea los elementos a la izquierda */
+    flex: 1;
+}
+
+  .form-label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  /* Clase para ajustar el ancho completo del área de texto de la incidencia */
+  .form-row-full {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .textarea-large {
+    width: 100%;
+    max-width: 100%; /* Para que ocupe el mismo ancho que la fila de entrada */
+    height: 150px; /* Ajusta la altura según prefieras */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }  
+
+  .hom-body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 64vh; /* Ocupa toda la altura de la ventana */
+    width: 100%; /* Ocupa todo el ancho */
+    background-color: #f0f0f0;
+  }
+  
+  .hom-board {
+    display: flex;
+    width: 100%; /* Ajusta según necesites */
+    height: 100%; /* Ocupa el 100% del alto disponible */
+    border: 2px solid #ccc;
+    border-top: 3px solid #ffffff; 
+    border-bottom: 3px solid #ffffff;
+    overflow: hidden; /* Para evitar scroll general */
+    margin-top: 0;
+  }
+  
+  .hom-column {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Hacemos scroll solo en los tickets */
+    overflow-x: hidden;
+    padding: 20px;
+    padding-top: 0px;   
+    max-height: 100%; /* Ajustamos al tamaño de su contenedor */
+    position: relative; /* Para ayudar con la animación de ocultar los tickets */
+    margin-top: 0;
+  }
+  
+  .hom-column:not(:last-child) {
+    border-right: 2px solid #ccc; /* Línea vertical entre columnas */
+  }
+  
+  .hom-ticket {
+    background: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 0px;
+    margin-bottom: 10px;
+    padding: 10px;
+    cursor: grab;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .hom-ticket .ticket-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.hom-ticket .ticket-meta {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.hom-ticket .ticket-id {
+    font-size: 12px;
+    color: #888;
+}
+  
+  .hom-ticket:active {
+    cursor: grabbing;
+  }
+  
+  .hom-column.over {
+    background: #f7f7f7;
+  }
+
+  .hom-ticket.hidden {
+    opacity: 0;
+  }
+
+  .hom-column-header {
+    font-size: 20px;
+    text-align: left; /* Alineamos el texto a la izquierda */
+    padding: 10px 30px 10px 10px; /* Aumentamos el padding derecho para darle espacio a la viñeta */
+    border-bottom: 2px solid #ffffff;
+    margin-bottom: 10px;
+    position: sticky;
+    top: 0; /* Fijamos el título al inicio de la columna */
+    margin-top: 0;
+    background-color: #ffffff;
+    z-index: 1; /* Asegura que el título quede encima de los tickets */
+  }
+  
+  .hom-column-header::before {
+    content: ""; /* Necesario para crear el pseudo-elemento */
+    width: 10px; /* Tamaño del círculo */
+    height: 10px; /* Tamaño del círculo */
+    border-radius: 50%; /* Hace que sea circular */
+    background-color: #ffffff; /* Color de la viñeta, puedes cambiarlo según el estado */
+    position: absolute; /* Posiciona la viñeta fuera del flujo normal */
+    right: 10px; /* Ubica la viñeta a la derecha */
+    top: 50%; /* Centra la viñeta verticalmente */
+    transform: translateY(-50%); /* Ajusta la posición para centrarla completamente */
+  }
+  
+  .hom-column-header.priority::before {
+    background-color: #ff0000; /* rojo para el estado en prioritario */
+  }
+
+  .hom-column-header.pending::before {
+    background-color: #fffb00;  /* Amarillo para el estado sin leer */
+  }
+  
+  .hom-column-header.progress::before {
+    background-color: #003C92; /* Azul para el estado en progreso */
+  }
+
+  .hom-column-header.completed::before {
+    background-color: #1aff00; /* verde para el estado cerrado */ 
+  }  
+
+    /* Aplica solo al contenedor con scroll */
+  .hom-column {
+    scrollbar-width: thin; /* Para Firefox */
+    scrollbar-color: #888; /* Colores del scroll y fondo */
+  }
+
+  .hom-column::-webkit-scrollbar {
+    width: 20px; /* Grosor del scrollbar */
+  }
+
+  .hom-column::-webkit-scrollbar-track {
+    background: transparent; /* Fondo del scrollbar */
+    border-radius: 6px; /* Puntas redondeadas en el track */
+  }
+
+  .hom-column::-webkit-scrollbar-thumb {
+    background: #888; /* Color del scroll */
+    border-radius: 12px; /* Redondea los extremos */
+  }
+
+  .hom-column::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color más oscuro cuando el usuario pasa el mouse */
+  }
+
+  /* Ocultar flechas arriba/abajo (si las hay) */
+  .hom-column::-webkit-scrollbar-button {
+    display: none;
+  } 
+
+  .field-invalid {
+    border-color: #dc2626 !important;
+  }
+
+  .error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+  }
+
+  .hom-column-history {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Hacemos scroll solo en los tickets */
+    overflow-x: hidden;
+    padding: 20px;
+    padding-top: 0px;   
+    max-height: 100%; /* Ajustamos al tamaño de su contenedor */
+    position: relative; /* Para ayudar con la animación de ocultar los tickets */
+    margin-top: 0;
+  }
+
+  .hom-column-header-history {
+    font-size: 20px;
+    text-align: left; /* Alineamos el texto a la izquierda */
+    padding: 10px 30px 10px 10px; /* Aumentamos el padding derecho para darle espacio a la viñeta */
+    border-bottom: 2px solid #ffffff;
+    margin-bottom: 10px;
+    position: sticky;
+    top: 0; /* Fijamos el título al inicio de la columna */
+    margin-top: 0;
+    background-color: #ffffff;
+    z-index: 1; /* Asegura que el título quede encima de los tickets */
+  }
+  
+}

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./assets/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./src/output.css" rel="stylesheet">
+    <title>home</title>
+  </head>
+
+  <body class="body">
+    <div class="flex flex-col min-h-screen p-[5vw]">
+        <header class="relative">
+            <a href="" class="logo-link">
+                <img alt="Clínica Sagrada Família logo" height="50" src="./assets/logo-sagrada-familia.svg" href="index.html" class="absolute top-0 left-0"/>
+            </a>
+        </header>
+
+        <main class="flex-1 flex flex-col justify-center" style="padding-left: 0%; padding-right: 0%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div style="display: flex; justify-content: center; align-items: center; flex-grow: 1;">
+                    <div class="button-secondary flex items-center justify-between" style="width: 350px;">
+                        <input id="search-ticket" placeholder="Buscar ticket" type="text" class="bg-inherit w-auto border-none focus:outline-none hover:border-transparent py-2 ps-3" />
+                        <button id="search-button" class="search-button py-2 px-3">
+                            <img src="assets/search-icon.svg" alt="Buscar" class="search-image h-6 w-6" />
+                        </button>
+                    </div>
+                </div>
+                <div class="relative inline-block text-left">
+                    <!-- Boton de menu -->
+                    <button class="search-button py-2 px-3" style="margin-left: auto;" aria-expanded="false" id="menu-button">
+                      <img src="assets/barra-menu.svg" alt="Buscar" class="search-image h-6 w-6" />
+                    </button>
+                  
+                    <!-- Menu desplegable -->
+                    <div id="menu" class="absolute right-0 z-10 mt-2 w-56 origin-top-right bg-white shadow-lg ring-1 ring-black/5 focus:outline-none hidden" style="border-radius: 0;">
+                      <div class="py-2 px-4 text-sm text-gray-700">
+                        <p class="font-semibold">Usuario</p>
+                        <p>celia@sagradafamilia.com</p>
+                      </div>
+                      <div class="py-1">
+                        <a href="ticketsHistory.html" class="block hover:bg-gray-100">
+                            <button class="w-full text-left px-4 py-2 text-sm text-gray-700">Historial de tickets</button>
+                        </a>
+                        <a href="login.html" class="block hover:bg-gray-100">
+                            <button class="w-full text-left px-4 py-2 text-sm text-gray-700">Cerrar sesión</button>
+                        </a>
+                      </div>
+                    </div>
+                </div>                  
+            </div>
+
+            <div style="text-align: left; margin-bottom: 20px; padding-left: 5px;">
+                <a style="font-size: 30px;">Tickets</a>
+            </div>            
+
+            <div class="hom-body">
+                <div class="hom-board">
+                    <div class="hom-column" id="prioritarios">
+                        <div class="hom-column-header priority">Prioritarios</div>
+                    </div>
+                    <div class="hom-column" id="sinLeer">
+                        <div class="hom-column-header pending">Sin leer</div>
+                    </div>
+                    <div class="hom-column" id="enCurso">
+                        <div class="hom-column-header progress">En curso</div>
+                    </div>
+                    <div class="hom-column" id="cerrados">
+                        <div class="hom-column-header completed">Resueltos recientemente</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { ticketService } from './src/ticketService.js';
+
+        // Funcion para crear el HTML de un ticket
+        function createTicketElement(ticket) 
+        {
+            return `
+                <div class="hom-ticket" id="${ticket.id}" draggable="true">
+                    <div class="ticket-title">${ticket.title}</div>
+                    <div class="ticket-meta">
+                        <div class="ticket-date">Fecha: ${ticket.date}</div>
+                        <div class="ticket-department">Departamento: ${ticket.department}</div>
+                    </div>
+                    <div class="ticket-id">#${ticket.id}</div>
+                </div>
+            `;
+        }
+
+        // Funcion para renderizar todos los tickets
+        function renderTickets() 
+        {
+            const tickets = ticketService.getAllTickets();
+            
+            // Limpiar todas las columnas primero
+            document.querySelectorAll('.hom-column').forEach(column => 
+            {
+                const header = column.querySelector('.hom-column-header');
+                column.innerHTML = '';
+                column.appendChild(header);
+            });
+
+            // Renderizar tickets en cada columna
+            for(const [status, ticketList] of Object.entries(tickets)) 
+            {
+                const column = document.getElementById(status);
+                if(column) 
+                {
+                    ticketList.forEach(ticket => 
+                    {
+                        column.insertAdjacentHTML('beforeend', createTicketElement(ticket));
+                    });
+                }
+            }
+
+            // Agregar eventos de drag and drop a los nuevos tickets
+            setupDragAndDrop();
+        }
+
+        // Configurar drag and drop
+        function setupDragAndDrop() 
+        {
+            const tickets = document.querySelectorAll('.hom-ticket');
+            const columns = document.querySelectorAll('.hom-column');
+
+            tickets.forEach(ticket => 
+            {
+                ticket.addEventListener('dragstart', (e) => 
+                {
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                });
+
+                // Hacer que los tickets sean clickeables para ver detalles
+                ticket.addEventListener('click', () => 
+                {
+                    ticketService.setAccessOrigin('admin');
+                    window.location.href = `ticket.html?id=${ticket.id}`;
+                });
+            });
+
+            columns.forEach(column => 
+            {
+                column.addEventListener('dragover', (e) => 
+                {
+                    e.preventDefault();
+                    column.classList.add('over');
+                });
+
+                column.addEventListener('dragleave', () => 
+                {
+                    column.classList.remove('over');
+                });
+
+                column.addEventListener('drop', (e) => 
+                {
+                    e.preventDefault();
+                    column.classList.remove('over');
+
+                    const ticketId = e.dataTransfer.getData('text/plain');
+                    const newStatus = column.id;
+
+                    // Actualizar el estado en el servicio
+                    if(ticketService.updateTicketStatus(ticketId, newStatus)) 
+                    {
+                        renderTickets(); // Volver a renderizar todos los tickets
+                    }
+                });
+            });
+        }
+
+        // Configurar busqueda
+        document.getElementById('search-button').addEventListener('click', () => 
+        {
+            const ticketId = document.getElementById('search-ticket').value.trim();
+            const ticket = ticketService.getTicketById(ticketId);
+            
+            if(ticket) 
+            {
+                window.location.href = `ticket.html?id=${ticketId}`;
+            } 
+            else 
+            {
+                alert('No se encontró ningún ticket con ese ID');
+            }
+        });
+
+        // Inicializar la pagina
+        document.addEventListener('DOMContentLoaded', () => 
+        {
+            renderTickets();
+        });
+
+        // Seleccionar el boton y el menu
+        const menuButton = document.getElementById('menu-button');
+        const menu = document.getElementById('menu');
+
+        // Alternar visibilidad del menu
+        menuButton.addEventListener('click', function () 
+        {
+            menu.classList.toggle('hidden');
+        });
+    </script>
+  </body>   
+</html>

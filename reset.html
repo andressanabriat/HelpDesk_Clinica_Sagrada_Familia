@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./assets/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./src/output.css" rel="stylesheet">
+    <title>Login</title>
+  </head>
+    <body class="body">
+        <div class="flex flex-col min-h-screen p-[5vw]">
+            <header class="relative">
+                <a href="login.html" class="logo-link">
+                    <img alt="Clínica Sagrada Família logo" height="50" src="./assets/logo-sagrada-familia.svg" href="index.html" class="absolute top-0 left-0"/>
+                </a>
+            </header>
+        
+            <main class="flex-1 flex flex-col justify-center" style="padding-left: 20%; padding-right: 20%;">
+                <div>
+                    <h1 class="title1">Recuperar contraseña</h1>
+                </div><br>
+            
+                <div style="text-align: center;">
+                    <label for="email-input" style="display: block; text-align: left; width: 300px; margin: 0 auto 5px auto;">Correo electrónico</label>
+                    <div style="width: 300px; margin: 0 auto; margin-bottom: 15px;">
+                        <input 
+                            type="email" 
+                            id="email-input" 
+                            class="form-input" 
+                            placeholder="Correo" 
+                            style="width: 100%; border-radius: 0;"
+                        />
+                        <span id="email-error" class="error-message text-left"></span>
+                    </div>
+                </div>
+                <br><br>                          
+                <div style="text-align: center;">
+                    <button
+                        id="send-email-button" 
+                        class="button-primary" 
+                        style="width: 300px; margin: 0 auto;">
+                        Enviar correo de recuperación
+                    </button>
+                </div>
+            </main>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => 
+            {
+                const emailInput = document.getElementById('email-input');
+                const emailError = document.getElementById('email-error');
+                const sendButton = document.getElementById('send-email-button');
+
+                function validateEmail(email) 
+                {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return emailRegex.test(email);
+                }
+
+                function showError(message) 
+                {
+                    emailError.textContent = message;
+                    emailError.style.display = message ? 'block' : 'none';
+                }
+
+                emailInput.addEventListener('input', () => 
+                {
+                    const email = emailInput.value.trim();
+                    if(!email) 
+                    {
+                        showError('El correo es obligatorio');
+                    } 
+                    else if(!validateEmail(email)) 
+                    {
+                        showError('Formato de correo inválido');
+                    } 
+                    else 
+                    {
+                        showError('');
+                    }
+                });
+
+                sendButton.addEventListener('click', (e) => 
+                {
+                    e.preventDefault();
+                    const email = emailInput.value.trim();
+                    
+                    if(!email) 
+                    {
+                        showError('El correo es obligatorio');
+                        return;
+                    }
+                    
+                    if(!validateEmail(email)) 
+                    {
+                        showError('Formato de correo inválido');
+                        return;
+                    }
+
+                    // Si el correo es valido, mostramos el mensaje y redirigimos
+                    showError('');
+                    emailInput.value = '';
+                    
+                    // Mostrar mensaje de exito
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'success-message';
+                    successMessage.textContent = 'Se ha enviado un correo con las instrucciones para recuperar tu contraseña';
+                    document.querySelector('main').appendChild(successMessage);
+
+                    // Redireccionar despues de 2 segundos
+                    setTimeout(() => 
+                    {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                });
+            });
+        </script>
+        <style>
+            .error-message {
+                color: #dc2626;
+                font-size: 0.875rem;
+                margin-top: 0.25rem;
+                display: none;
+            }
+
+            .success-message {
+                color: #059669;
+                font-size: 0.875rem;
+                margin-top: 1rem;
+                text-align: center;
+                animation: fadeIn 0.3s ease-in;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        </style>
+    </body>   
+</html>
